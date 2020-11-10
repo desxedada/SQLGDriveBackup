@@ -1,0 +1,14 @@
+name: example-environment
+
+dependencies:
+  - python=3.6
+  - sqlalchemy
+  - numpy
+  - toolz
+  - matplotlib
+  - dill
+  - pandas
+  - partd
+  - bokeh
+  - pip=20.2.*
+  - kivy
