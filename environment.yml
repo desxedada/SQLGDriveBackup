@@ -1,8 +1,14 @@
 name: example-environment
 
+channels:
+  - conda-forge
+  - defaults
+
 dependencies:
   - python=3.6
   - sqlalchemy
+  - pandas
+  - pyodbc
   - numpy
   - toolz
   - matplotlib
@@ -11,4 +17,3 @@ dependencies:
   - partd
   - bokeh
   - pip=20.2.*
-  - kivy
