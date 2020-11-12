@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>mainWindow</class>
+ <widget class="QMainWindow" name="mainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>432</width>
+    <width>416</width>
     <height>715</height>
    </rect>
   </property>
@@ -46,12 +46,12 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>210</y>
+       <y>180</y>
        <width>391</width>
        <height>111</height>
       </rect>
      </property>
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QFormLayout" name="authLayout">
       <property name="leftMargin">
        <number>10</number>
       </property>
@@ -102,10 +102,10 @@
        <x>10</x>
        <y>80</y>
        <width>391</width>
-       <height>101</height>
+       <height>71</height>
       </rect>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
+     <layout class="QFormLayout" name="databaseLayout">
       <property name="leftMargin">
        <number>10</number>
       </property>
@@ -138,13 +138,6 @@
       <item row="1" column="1">
        <widget class="QComboBox" name="destinationBox"/>
       </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="pushButton">
-        <property name="text">
-         <string>Authorize</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
     <widget class="QLabel" name="label_6">
@@ -173,7 +166,7 @@
      <property name="geometry">
       <rect>
        <x>320</x>
-       <y>330</y>
+       <y>300</y>
        <width>75</width>
        <height>23</height>
       </rect>
@@ -185,7 +178,7 @@
     <widget class="QPushButton" name="backupButton">
      <property name="geometry">
       <rect>
-       <x>330</x>
+       <x>320</x>
        <y>630</y>
        <width>81</width>
        <height>31</height>
@@ -199,7 +192,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>340</y>
+       <y>300</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -212,12 +205,12 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>380</y>
+       <y>430</y>
        <width>391</width>
-       <height>231</height>
+       <height>181</height>
       </rect>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
+     <layout class="QFormLayout" name="listLayout">
       <item row="0" column="1">
        <widget class="QTreeView" name="databaseTreeView"/>
       </item>
@@ -231,7 +224,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>432</width>
+     <width>416</width>
      <height>21</height>
     </rect>
    </property>

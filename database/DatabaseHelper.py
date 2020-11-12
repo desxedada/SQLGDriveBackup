@@ -1,21 +1,16 @@
-import urllib
 import pyodbc
-import pandas as pd
-
+import logging
 
 class DatabaseHelper:
 
     def __init__(self, server, database, user, password):
         params = self.window_Auth(server, database)
-        conn = pyodbc.connect(params)
-        cursor = conn.cursor()
-        cursor.execute("select name from sys.databases WHERE name NOT IN ('master','model','msdb','tempdb')")
-        rows = cursor.fetchall()
-        for row in rows:
-            print(row)
+        self.conn = pyodbc.connect(params)
+        self.cursor = self.conn.cursor()
+
 
     def window_Auth(self, server, database):
-        params = ("DRIVER={SQL Server};"
+        params = ("DRIVER={ODBC Driver 17 for SQL Server};"
                   f"SERVER={server};"
                   f"Trusted_Connection=yes;"
                  )
@@ -31,18 +26,28 @@ class DatabaseHelper:
         return params
 
     def test_connection(self):
-        msg = ""
+        for retry in range(3):
+            try:
+                self.cursor.execute("SELECT 1")
+                print("Connection established")
+                return
+            except pyodbc.ProgrammingError as e:
+                raise Exception(e)
+
 
     def displayAllInstances(self):
-        pass
-
-    def get_Instance(self):
-        pass
-
-    def run_query(self):
-        pass
+        self.cursor.execute("select name from sys.databases WHERE name NOT IN ('master','model','msdb','tempdb')")
+        rows = self.cursor.fetchall()
+        for row in rows:
+            print(row)
 
 
-if __name__ == "__main__":
-    dh = DatabaseHelper("DESKTOP-NE47J00\ML001", "master", "", "")
-    dh.test_connection()
+    def backup_database(self,name,path):
+        self.cursor.execute(
+            f'''
+             BACKUP DATABASE ? TO DISK = ?
+            ''', [name,path]
+        )
+        logging.info(f"{name} is being backed up")
+
+

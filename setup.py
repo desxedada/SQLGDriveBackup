@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='SQLGDriveBackup',
-    version='0.0.1',
+    version='1.0.0',
     packages=[''],
     url='',
     license='MIT License',
