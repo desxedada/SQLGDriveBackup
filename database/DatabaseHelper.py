@@ -42,12 +42,23 @@ class DatabaseHelper:
             print(row)
 
 
-    def backup_database(self,name,path):
+    def backup_database(self,dbname , name,path):
         self.cursor.execute(
             f'''
+            OPEN db_cursor   
+            FETCH NEXT FROM db_cursor INTO ?	 
+
+            WHILE @@FETCH_STATUS = 0   
+            BEGIN
              BACKUP DATABASE ? TO DISK = ?
-            ''', [name,path]
+             FETCH NEXT FROM db_cursor INTO ?
+            END
+            CLOSE db_cursor
+            DEALLOCATE db_cursor
+            ''', [dbname,name,path,dbname]
         )
         logging.info(f"{name} is being backed up")
+
+
 
 
