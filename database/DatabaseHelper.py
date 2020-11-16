@@ -1,5 +1,8 @@
 import pyodbc
 import logging
+import sqlalchemy
+import ctypes
+import os
 
 class DatabaseHelper:
 
@@ -29,36 +32,47 @@ class DatabaseHelper:
         for retry in range(3):
             try:
                 self.cursor.execute("SELECT 1")
-                print("Connection established")
-                return
+                return "Connection established"
             except pyodbc.ProgrammingError as e:
                 raise Exception(e)
 
 
-    def displayAllInstances(self):
+    def displayAllDatabases(self):
+        databases = []
         self.cursor.execute("select name from sys.databases WHERE name NOT IN ('master','model','msdb','tempdb')")
-        rows = self.cursor.fetchall()
-        for row in rows:
-            print(row)
+        for db in self.cursor.fetchall():
+            databases.append(db)
+
+        return databases
+
+    def displayAllInstances(self):
+        instances = []
 
 
-    def backup_database(self,dbname , name,path):
+        return instances
+
+
+    def backup_database(self , name,path):
+        self.conn.autocommit = True
         self.cursor.execute(
             f'''
-            OPEN db_cursor   
-            FETCH NEXT FROM db_cursor INTO ?	 
-
-            WHILE @@FETCH_STATUS = 0   
-            BEGIN
-             BACKUP DATABASE ? TO DISK = ?
-             FETCH NEXT FROM db_cursor INTO ?
-            END
-            CLOSE db_cursor
-            DEALLOCATE db_cursor
-            ''', [dbname,name,path,dbname]
+            DECLARE @name VARCHAR(50)
+            DECLARE @path VARCHAR(250)
+            DECLARE @savePath VARCHAR(250)
+            SET @name = ?
+            SET @path = ?
+            SET @savePath = @path+@name+ '.bak'
+            BACKUP DATABASE @name TO DISK = @savepath 
+    
+            ''', [name,path]
         )
+        #self.conn.autocommit = False
         logging.info(f"{name} is being backed up")
 
-
-
-
+#TODO Program needs to check for admin privilieges
+if __name__ == "__main__":
+    path = "C:/Backups/"
+    dh = DatabaseHelper(".\ML001","","","")
+    dh.test_connection()
+    dh.displayAllInstances()
+    dh.backup_database("testcompany",path)

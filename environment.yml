@@ -15,5 +15,6 @@ dependencies:
   - dill
   - pandas
   - partd
+  - google-api-python-client
   - bokeh
   - pip=20.2.*

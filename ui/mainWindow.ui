@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="frameShape">
-     <enum>QFrame::StyledPanel</enum>
+     <enum>QFrame::Box</enum>
     </property>
     <property name="frameShadow">
      <enum>QFrame::Raised</enum>
@@ -65,7 +65,18 @@
        <number>10</number>
       </property>
       <item row="0" column="1">
-       <widget class="QComboBox" name="authTypeBox"/>
+       <widget class="QComboBox" name="authTypeBox">
+        <item>
+         <property name="text">
+          <string>Windows Authentication</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>SQL Authentication</string>
+         </property>
+        </item>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
@@ -75,7 +86,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="usernameEdit"/>
+       <widget class="QLineEdit" name="usernameEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_4">
@@ -85,7 +100,11 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="pwdEdit"/>
+       <widget class="QLineEdit" name="pwdEdit">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
@@ -102,7 +121,7 @@
        <x>10</x>
        <y>80</y>
        <width>391</width>
-       <height>71</height>
+       <height>95</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="databaseLayout">
@@ -136,7 +155,18 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="destinationBox"/>
+       <widget class="QComboBox" name="destinationBox">
+        <item>
+         <property name="text">
+          <string>Device</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Google Drive</string>
+         </property>
+        </item>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -162,19 +192,6 @@
       <string>SQL SERVER BACKUP TOOL</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="okButton">
-     <property name="geometry">
-      <rect>
-       <x>320</x>
-       <y>300</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Ok</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="backupButton">
      <property name="geometry">
       <rect>
@@ -188,31 +205,76 @@
       <string>Backup</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="connectionButton">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>300</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Test Connection</string>
-     </property>
-    </widget>
     <widget class="QWidget" name="formLayoutWidget_3">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>430</y>
+       <y>360</y>
        <width>391</width>
-       <height>181</height>
+       <height>251</height>
       </rect>
      </property>
      <layout class="QFormLayout" name="listLayout">
       <item row="0" column="1">
        <widget class="QTreeView" name="databaseTreeView"/>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>300</y>
+       <width>391</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
+      <property name="bottomMargin">
+       <number>10</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="connectionButton">
+        <property name="text">
+         <string>Test Connection</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="connectionLabel">
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="okButton">
+        <property name="text">
+         <string>Ok</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -249,5 +311,70 @@
   </action>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>connectionButton</sender>
+   <signal>clicked()</signal>
+   <receiver>connectionButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>80</x>
+     <y>348</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>80</x>
+     <y>347</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>okButton</sender>
+   <signal>clicked()</signal>
+   <receiver>okButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>354</x>
+     <y>345</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>354</x>
+     <y>345</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>backupButton</sender>
+   <signal>clicked()</signal>
+   <receiver>backupButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>366</x>
+     <y>658</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>366</x>
+     <y>658</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>instanceBox</sender>
+   <signal>activated(QString)</signal>
+   <receiver>instanceBox</receiver>
+   <slot>setCurrentText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>256</x>
+     <y>114</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>287</x>
+     <y>118</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
