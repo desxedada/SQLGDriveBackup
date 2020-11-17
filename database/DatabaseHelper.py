@@ -1,12 +1,14 @@
 import pyodbc
 import logging
-import sqlalchemy
-import ctypes
-import os
+from winreg import *
 
 class DatabaseHelper:
 
+
     def __init__(self, server, database, user, password):
+        self.a_key = r"SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names\SQL"
+        self.a_reg = ConnectRegistry(None, HKEY_LOCAL_MACHINE)
+
         params = self.window_Auth(server, database)
         self.conn = pyodbc.connect(params)
         self.cursor = self.conn.cursor()
@@ -47,10 +49,7 @@ class DatabaseHelper:
 
     def displayAllInstances(self):
         instances = []
-
-
         return instances
-
 
     def backup_database(self , name,path):
         self.conn.autocommit = True
@@ -69,10 +68,17 @@ class DatabaseHelper:
         #self.conn.autocommit = False
         logging.info(f"{name} is being backed up")
 
+
+    def get_instance_names(self):
+        self.a_key = OpenKey(a)
+
+
+
+
 #TODO Program needs to check for admin privilieges
 if __name__ == "__main__":
     path = "C:/Backups/"
     dh = DatabaseHelper(".\ML001","","","")
     dh.test_connection()
-    dh.displayAllInstances()
-    dh.backup_database("testcompany",path)
+    dh.show_all_databases()
+

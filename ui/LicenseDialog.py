@@ -7,8 +7,13 @@
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
+import sys
 
 from PySide2 import QtCore, QtGui, QtWidgets
+from PySide2.QtCore import QIODevice, QFile
+from PySide2.QtUiTools import QUiLoader
+from PySide2.QtWidgets import QApplication
+
 
 class Ui_licenseDialog(object):
     def setupUi(self, licenseDialog):
