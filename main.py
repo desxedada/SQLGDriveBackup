@@ -4,12 +4,16 @@ from PySide2.QtCore import QFile, QIODevice, Slot , Signal
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog
 from ui.mainWindow import Ui_mainWindow
+from ui.authorizeWindow import Ui_authorizeWindow
 from database.DatabaseHelper import DatabaseHelper
 from system.Admin import Admin
 
 class Main(QMainWindow,Ui_mainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
+
+        #Qt app
+        app = QApplication(sys.argv)
 
         #Get Local Host
 
@@ -46,6 +50,7 @@ class Main(QMainWindow,Ui_mainWindow):
     def choose_destination(self):
         if self.ui.destinationBox.currentText() == "Google Drive":
             self.ui.chooseButton.setText("Authorize")
+            self.ui.chooseButton.clicked.connect(self.show_window)
             pass
         elif self.ui.destinationBox.currentText() == "Device":
             dialog = QFileDialog(self)
@@ -65,10 +70,13 @@ class Main(QMainWindow,Ui_mainWindow):
             self.ui.usernameEdit.setEnabled(True)
             self.ui.pwdEdit.setEnabled(True)
 
+    def show_window(self):
 
+        window = Ui_authorizeWindow()
+        window.show()
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+
 
     ui_file_name = "ui/mainWindow.ui"
     ui_file = QFile(ui_file_name)
