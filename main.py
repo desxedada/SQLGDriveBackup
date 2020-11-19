@@ -11,17 +11,11 @@ from system.Admin import Admin
 class Main(QMainWindow,Ui_mainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
-
-        #Qt app
-        app = QApplication(sys.argv)
-
         #Get Local Host
-
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
         self.ui.connectionButton.clicked.connect(self.testConnection)
         self.ui.connectionButton.show()
-        self.ui.instanceBox.addItems(self.populate_instance())
         self.ui.usernameEdit.setEnabled(False)
         self.ui.pwdEdit.setEnabled(False)
         self.admin = Admin()
@@ -30,6 +24,7 @@ class Main(QMainWindow,Ui_mainWindow):
         self.ui.destinationBox.activated[str].connect(self.onDestChanged)
         self.ui.authTypeBox.activated[str].connect(self.onAuthChanged)
         self.ui.connectionLabel.setVisible(False)
+        self.populate_instance()
 
         #Show Window
         self.show()
@@ -42,10 +37,11 @@ class Main(QMainWindow,Ui_mainWindow):
         self.ui.connectionLabel.setVisible(True)
 
     def populate_instance(self):
-        dh = DatabaseHelper(".\ML001","","","")
-        instances = dh.displayAllInstances()
-        print(instances)
-        return instances
+        a = Admin()
+        sqlnames = a.sub_keys()
+        print(sqlnames)
+        self.ui.instanceBox.addItems(sqlnames)
+
 
     def choose_destination(self):
         if self.ui.destinationBox.currentText() == "Google Drive":
@@ -76,8 +72,8 @@ class Main(QMainWindow,Ui_mainWindow):
         window.show()
 
 if __name__ == "__main__":
-
-
+    # Qt app
+    app = QApplication(sys.argv)
     ui_file_name = "ui/mainWindow.ui"
     ui_file = QFile(ui_file_name)
     if not ui_file.open(QIODevice.ReadOnly):

@@ -7,17 +7,10 @@ class DatabaseHelper:
     def __init__(self, server, database, user, password):
 
         params = self.window_Auth(server, database)
-        self.reg_path = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SQL Server\Instance Names"
+
         self.conn = pyodbc.connect(params)
         self.cursor = self.conn.cursor()
 
-    def get_key(self):
-       try:
-           registry_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,self.reg_path,0,winreg.KEY_READ)
-           value = winreg.QueryValueEx(registry_key,"SQL")
-           print(value)
-       except WindowsError:
-           return None
 
     def window_Auth(self, server, database):
         params = ("DRIVER={ODBC Driver 17 for SQL Server};"
@@ -74,8 +67,6 @@ class DatabaseHelper:
         logging.info(f"{name} is being backed up")
 
 
-    def get_instance_names(self):
-        self.a_key = OpenKey(a)
 
 
 
@@ -84,7 +75,6 @@ class DatabaseHelper:
 if __name__ == "__main__":
     path = "C:/Backups/"
     dh = DatabaseHelper(".\ML001","","","")
-    dh.get_key()
     dh.test_connection()
 
 
