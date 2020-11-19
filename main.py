@@ -11,7 +11,9 @@ from system.Admin import Admin
 class Main(QMainWindow,Ui_mainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
-        #Get Local Host
+
+
+
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
         self.ui.connectionButton.clicked.connect(self.testConnection)
@@ -30,8 +32,8 @@ class Main(QMainWindow,Ui_mainWindow):
         self.show()
 
     def testConnection(self):
-        pass
-        dh = DatabaseHelper(".\ML001","","","")
+        server_name = ".\\" + (self.ui.instanceBox.currentText())
+        dh = DatabaseHelper(server_name,"","","")
         msg = dh.test_connection()
         self.ui.connectionLabel.setText(msg)
         self.ui.connectionLabel.setVisible(True)
@@ -66,10 +68,6 @@ class Main(QMainWindow,Ui_mainWindow):
             self.ui.usernameEdit.setEnabled(True)
             self.ui.pwdEdit.setEnabled(True)
 
-    def show_window(self):
-
-        window = Ui_authorizeWindow()
-        window.show()
 
 if __name__ == "__main__":
     # Qt app

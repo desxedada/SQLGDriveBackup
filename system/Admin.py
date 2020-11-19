@@ -60,7 +60,7 @@ class Admin:
         parentKey = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path, access=winreg.KEY_READ | winreg.KEY_WOW64_64KEY)
         name_list = []
         try:
-            count = 0
+            count = 1
             while 1:
                 name, key, value = winreg.EnumValue(parentKey, count)
                 name_list.append(name)

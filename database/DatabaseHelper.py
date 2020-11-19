@@ -13,7 +13,7 @@ class DatabaseHelper:
 
 
     def window_Auth(self, server, database):
-        params = ("DRIVER={ODBC Driver 17 for SQL Server};"
+        params = ("DRIVER={ODBC Driver 13.1 for SQL Server};"
                   f"SERVER={server};"
                   f"Trusted_Connection=yes;"
                  )
@@ -21,7 +21,7 @@ class DatabaseHelper:
 
     def sql_Auth(self, server, database, username, password):
         params =(
-            "DRIVER={SQL Server};"
+            "DRIVER={ODBC Driver 13.1 for SQL Server};"
             f"SERVER={server};"
             f"username={username}"
             f"password={password}"
@@ -74,7 +74,7 @@ class DatabaseHelper:
 #TODO Program needs to check for admin privilieges
 if __name__ == "__main__":
     path = "C:/Backups/"
-    dh = DatabaseHelper(".\ML001","","","")
+    dh = DatabaseHelper(".\SQLEXPRESS:1433","","","")
     dh.test_connection()
 
 
