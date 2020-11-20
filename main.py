@@ -1,18 +1,19 @@
 import sys
 
-from PySide2.QtCore import QFile, QIODevice, Slot , Signal
+from PySide2 import QtCore, QtWidgets
+from PySide2.QtCore import QFile, QIODevice, Slot, Signal, QRunnable
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog
+
 from ui.mainWindow import Ui_mainWindow
 from ui.authorizeWindow import Ui_authorizeWindow
 from database.DatabaseHelper import DatabaseHelper
 from system.Admin import Admin
 
+
 class Main(QMainWindow,Ui_mainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
-
-
 
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
@@ -25,6 +26,7 @@ class Main(QMainWindow,Ui_mainWindow):
         self.ui.chooseButton.clicked.connect(self.choose_destination)
         self.ui.destinationBox.activated[str].connect(self.onDestChanged)
         self.ui.authTypeBox.activated[str].connect(self.onAuthChanged)
+        self.ui.okButton.clicked.connect(self.onOk_clicked)
         self.ui.connectionLabel.setVisible(False)
         self.populate_instance()
 
@@ -67,6 +69,18 @@ class Main(QMainWindow,Ui_mainWindow):
         else:
             self.ui.usernameEdit.setEnabled(True)
             self.ui.pwdEdit.setEnabled(True)
+
+
+    def onOk_clicked(self):
+        self.ui.databaseListWidget.clear()
+        dh = DatabaseHelper(".\ML001","","","")
+        databases = dh.displayAllDatabases()
+        for data in databases:
+            item = QtWidgets.QListWidgetItem(data)
+            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
+            item.setCheckState(QtCore.Qt.Unchecked)
+            self.ui.databaseListWidget.addItem(item)
+
 
 
 if __name__ == "__main__":

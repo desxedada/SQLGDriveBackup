@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainWindow.ui',
 # licensing of 'mainWindow.ui' applies.
 #
-# Created: Tue Nov 17 15:02:51 2020
+# Created: Fri Nov 20 14:06:30 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -100,9 +100,9 @@ class Ui_mainWindow(object):
         self.listLayout = QtWidgets.QFormLayout(self.formLayoutWidget_3)
         self.listLayout.setContentsMargins(0, 0, 0, 0)
         self.listLayout.setObjectName("listLayout")
-        self.databaseTreeView = QtWidgets.QTreeView(self.formLayoutWidget_3)
-        self.databaseTreeView.setObjectName("databaseTreeView")
-        self.listLayout.setWidget(0, QtWidgets.QFormLayout.SpanningRole, self.databaseTreeView)
+        self.databaseListWidget = QtWidgets.QListWidget(self.formLayoutWidget_3)
+        self.databaseListWidget.setObjectName("databaseListWidget")
+        self.listLayout.setWidget(0, QtWidgets.QFormLayout.FieldRole, self.databaseListWidget)
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.frame)
         self.horizontalLayoutWidget.setGeometry(QtCore.QRect(10, 280, 391, 51))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
@@ -114,6 +114,7 @@ class Ui_mainWindow(object):
         self.horizontalLayout.addWidget(self.connectionButton)
         self.connectionLabel = QtWidgets.QLabel(self.horizontalLayoutWidget)
         self.connectionLabel.setObjectName("connectionLabel")
+        self.horizontalLayout.addWidget(self.connectionLabel)
         self.horizontalLayout.addWidget(self.connectionLabel)
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem)

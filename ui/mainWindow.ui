@@ -233,8 +233,8 @@
       </rect>
      </property>
      <layout class="QFormLayout" name="listLayout">
-      <item row="0" column="0" colspan="2">
-       <widget class="QTreeView" name="databaseTreeView"/>
+      <item row="0" column="1">
+       <widget class="QListWidget" name="databaseListWidget"/>
       </item>
      </layout>
     </widget>
