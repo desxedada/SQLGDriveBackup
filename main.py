@@ -14,7 +14,6 @@ from system.Admin import Admin
 class Main(QMainWindow,Ui_mainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
-
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
         self.ui.connectionButton.clicked.connect(self.testConnection)
@@ -29,9 +28,14 @@ class Main(QMainWindow,Ui_mainWindow):
         self.ui.okButton.clicked.connect(self.onOk_clicked)
         self.ui.connectionLabel.setVisible(False)
         self.populate_instance()
+        name = self.ui.instanceBox.currentText()
+
 
         #Show Window
         self.show()
+
+    def establishConnection(self):
+        dh = DatabaseHelper()
 
     def testConnection(self):
         server_name = ".\\" + (self.ui.instanceBox.currentText())

@@ -13,10 +13,15 @@ database_thread = threading.local()
 
 
 class DatabaseHelper:
-    def __init__(self, server, database, user, password):
+    def __init__(self):
         Thread.__init__(self)
-        params = self.window_Auth(server, database)
 
+
+    def set_Connection(self,check,server,database):
+        if check:
+            params = self.window_Auth(server, database)
+        else:
+            params = self.sql_Auth(server, database)
         self.conn = pyodbc.connect(params)
         self.cursor = self.conn.cursor()
 
@@ -29,7 +34,7 @@ class DatabaseHelper:
 
     def sql_Auth(self, server, database, username, password):
         params = (
-            "DRIVER={ODBC Driver 13.1 for SQL Server};"
+            "DRIVER={ODBC Driver 17 for SQL Server};"
             f"SERVER={server};"
             f"username={username}"
             f"password={password}"
