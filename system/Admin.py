@@ -40,20 +40,11 @@ class SW(enum.IntEnum):
 
 class Admin:
 
-    def is_running_as_admin(self):
-        try:
-            return ctypes.windll.shell32.IsUserAnAdmin
-        except:
-            return False
+    def __init__(self):
+        isAdmin = ctypes.windll.shell32.IsUserAnAdmin()
+        if not isAdmin:
+            ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, __file__, None, 1)
 
-    def start_admin(self):
-        if not self.is_running_as_admin():
-            # activate Windows Admin
-            hinstance = ctypes.windll.shell32.ShellExecuteW(
-                None, 'runas', sys.executable, sys.argv[0], None, SW.SHOWNORMAL
-            )
-            if hinstance <= 32:
-                raise RuntimeError(ERROR(hinstance))
 
     def sub_keys(self):
         reg_path = r"SOFTWARE\\Microsoft\\Microsoft SQL Server\\Instance Names\\SQL"
@@ -63,7 +54,8 @@ class Admin:
             count = 1
             while 1:
                 name, key, value = winreg.EnumValue(parentKey, count)
-                name_list.append(name)
+                if name not in ['SQLEXPRESS','MSSQLSERVER',"."]:
+                    name_list.append(name)
                 count += 1
         except WindowsError:
             pass

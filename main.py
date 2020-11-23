@@ -1,19 +1,23 @@
+import os
 import sys
 
-from PySide2 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets, QtGui
 from PySide2.QtCore import QFile, QIODevice, Slot, Signal, QRunnable
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+
+from os.path import expanduser
 
 from ui.mainWindow import Ui_mainWindow
-from ui.authorizeWindow import Ui_authorizeWindow
 from database.DatabaseHelper import DatabaseHelper
 from system.Admin import Admin
 
 
-class Main(QMainWindow,Ui_mainWindow):
+# TODO: backup to device, choose file, test connection, choosing databases
+class Main(QMainWindow, Ui_mainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
+
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
         self.ui.connectionButton.clicked.connect(self.testConnection)
@@ -21,44 +25,57 @@ class Main(QMainWindow,Ui_mainWindow):
         self.ui.usernameEdit.setEnabled(False)
         self.ui.pwdEdit.setEnabled(False)
         self.admin = Admin()
-        self.admin.start_admin()
-        self.ui.chooseButton.clicked.connect(self.choose_destination)
+
+
+        self.ui.instanceBox.activated.connect(self.handleComboActivated)
+        self.ui.authTypeBox.activated.connect(self.handleComboSQLActivated)
+
+        self.ui.chooseButton.clicked.connect(self.chooseDirectory)
         self.ui.destinationBox.activated[str].connect(self.onDestChanged)
-        self.ui.authTypeBox.activated[str].connect(self.onAuthChanged)
         self.ui.okButton.clicked.connect(self.onOk_clicked)
+        self.ui.backupButton.clicked.connect(self.onBackupClicked)
         self.ui.connectionLabel.setVisible(False)
+
+        self.username = self.ui.usernameEdit.text()
+        self.password = self.ui.pwdEdit.text()
         self.populate_instance()
-        name = self.ui.instanceBox.currentText()
 
-
-        #Show Window
+        # Show Window
         self.show()
 
-    def establishConnection(self):
-        dh = DatabaseHelper()
+    # Check the type of SQL server authentication
+    def checkAuthType(self):
+        if self.ui.authTypeBox.currentIndex() is 0:
+            return "yes"
+        else:
+            return "no"
 
     def testConnection(self):
-        server_name = ".\\" + (self.ui.instanceBox.currentText())
-        dh = DatabaseHelper(server_name,"","","")
-        msg = dh.test_connection()
+        trusted_conn = self.checkAuthType()
+        datahelper = DatabaseHelper(self.server_name, trusted_conn, self.username, self.password)
+        msg = datahelper.test_connection()
         self.ui.connectionLabel.setText(msg)
         self.ui.connectionLabel.setVisible(True)
 
     def populate_instance(self):
-        a = Admin()
-        sqlnames = a.sub_keys()
-        print(sqlnames)
+        sqlnames = self.admin.sub_keys()
+        sqlnames.append("ML001")
         self.ui.instanceBox.addItems(sqlnames)
 
+    # handlers
+    def handleComboActivated(self):
+        indexItem = f".\\{self.ui.instanceBox.currentText()}"
+        self.server_name = indexItem
 
-    def choose_destination(self):
-        if self.ui.destinationBox.currentText() == "Google Drive":
-            self.ui.chooseButton.setText("Authorize")
-            self.ui.chooseButton.clicked.connect(self.show_window)
-            pass
-        elif self.ui.destinationBox.currentText() == "Device":
-            dialog = QFileDialog(self)
-            dialog.setFileMode(QFileDialog.AnyFile)
+    def handleComboSQLActivated(self):
+        if self.ui.authTypeBox.currentIndex() is 0:
+            self.ui.usernameEdit.setEnabled(False)
+            self.ui.pwdEdit.setEnabled(False)
+        else:
+            self.ui.usernameEdit.setEnabled(True)
+            self.ui.pwdEdit.setEnabled(True)
+
+        self.sql_conn_type = self.ui.authTypeBox.currentIndex()
 
     def onDestChanged(self):
         if self.ui.destinationBox.currentText() == "Google Drive":
@@ -66,26 +83,57 @@ class Main(QMainWindow,Ui_mainWindow):
         elif self.ui.destinationBox.currentText() == "Device":
             self.ui.chooseButton.setText("Choose")
 
-    def onAuthChanged(self):
-        if self.ui.destinationBox.currentText() == "Windows Authentication":
-            self.ui.usernameEdit.setEnabled(False)
-            self.ui.pwdEdit.setEnabled(False)
-        else:
-            self.ui.usernameEdit.setEnabled(True)
-            self.ui.pwdEdit.setEnabled(True)
+    def chooseDirectory(self):
+        if self.ui.destinationBox.currentText() == "Google Drive":
+            self.ui.chooseButton.setText("Authorize")
+            self.ui.chooseButton.clicked.connect(self.show_window)
+            pass
+        elif self.ui.destinationBox.currentText() == "Device":
+            dialog = QFileDialog(self)
+            dialog.setFileMode(QFileDialog.AnyFile)
+            dest_dir = QFileDialog.getExistingDirectory(self,
+                                                        "Backup Destination Folder",
+                                                        expanduser("~"),
+                                                        QFileDialog.ShowDirsOnly)
 
+            self.ui.destEdit.setText(os.path.normpath(dest_dir))
 
     def onOk_clicked(self):
+
         self.ui.databaseListWidget.clear()
-        dh = DatabaseHelper(".\ML001","","","")
-        databases = dh.displayAllDatabases()
+        trusted_conn = self.checkAuthType()
+        datahelper = DatabaseHelper(self.server_name, trusted_conn, self.username, self.password)
+        databases = datahelper.displayAllDatabases()
         for data in databases:
             item = QtWidgets.QListWidgetItem(data)
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             item.setCheckState(QtCore.Qt.Unchecked)
             self.ui.databaseListWidget.addItem(item)
 
+    def onBackupClicked(self):
+        msgbox = QMessageBox
+        try:
+            trusted_conn = self.checkAuthType()
+            path = self.ui.destEdit.text()
+            backup_items = self.getCheckedItems()
+            datahelper = DatabaseHelper(self.server_name, trusted_conn, self.username, self.password)
+            if path is not "" or None:
+                for items in backup_items:
+                    datahelper.backup_database(items, path)
+                msgbox.information(self,"",f"Databases has been backup!")
+            else:
+                msgbox.warning(self, "Warning", "Backup folder destination not chosen")
+        except Exception as e:
+            msgbox.warning(self, "Warning", repr(e))
 
+    def getCheckedItems(self):
+        checkedItems = []
+        checkedDB = self.ui.databaseListWidget
+        for index in range(checkedDB.count()):
+            if checkedDB.item(index).checkState() is QtCore.Qt.Checked:
+                checkedItems.append(checkedDB.item(index).text())
+        print(checkedItems)
+        return checkedItems
 
 if __name__ == "__main__":
     # Qt app
