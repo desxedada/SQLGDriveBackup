@@ -13,8 +13,10 @@ dependencies:
   - toolz
   - matplotlib
   - dill
+  - pywin32
   - pandas
   - partd
   - google-api-python-client
   - bokeh
   - pip=20.2.*
+  - schedule

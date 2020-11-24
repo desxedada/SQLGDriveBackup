@@ -10,7 +10,7 @@ from os.path import expanduser
 
 from ui.mainWindow import Ui_mainWindow
 from database.DatabaseHelper import DatabaseHelper
-from system.Admin import Admin
+from system.registry import Registry
 
 
 # TODO: backup to device, choose file, test connection, choosing databases
@@ -22,13 +22,10 @@ class Main(QMainWindow, Ui_mainWindow):
         self.ui.setupUi(self)
         self.ui.connectionButton.clicked.connect(self.testConnection)
         self.ui.connectionButton.show()
-        self.ui.usernameEdit.setEnabled(False)
-        self.ui.pwdEdit.setEnabled(False)
-        self.admin = Admin()
-
+        self.registry = Registry()
+        self.server_name = self.ui.instanceBox.currentText()
 
         self.ui.instanceBox.activated.connect(self.handleComboActivated)
-        self.ui.authTypeBox.activated.connect(self.handleComboSQLActivated)
 
         self.ui.chooseButton.clicked.connect(self.chooseDirectory)
         self.ui.destinationBox.activated[str].connect(self.onDestChanged)
@@ -36,29 +33,28 @@ class Main(QMainWindow, Ui_mainWindow):
         self.ui.backupButton.clicked.connect(self.onBackupClicked)
         self.ui.connectionLabel.setVisible(False)
 
-        self.username = self.ui.usernameEdit.text()
-        self.password = self.ui.pwdEdit.text()
+
         self.populate_instance()
 
         # Show Window
         self.show()
 
     # Check the type of SQL server authentication
-    def checkAuthType(self):
-        if self.ui.authTypeBox.currentIndex() is 0:
-            return "yes"
-        else:
-            return "no"
+    #def checkAuthType(self):
+    #    if self.ui.authTypeBox.currentIndex() is 0:
+    #        return "yes"
+    #    else:
+    #        return "no"
 
     def testConnection(self):
-        trusted_conn = self.checkAuthType()
-        datahelper = DatabaseHelper(self.server_name, trusted_conn, self.username, self.password)
+        trusted_conn = "yes"
+        datahelper = DatabaseHelper(self.server_name, trusted_conn)
         msg = datahelper.test_connection()
         self.ui.connectionLabel.setText(msg)
         self.ui.connectionLabel.setVisible(True)
 
     def populate_instance(self):
-        sqlnames = self.admin.sub_keys()
+        sqlnames = self.registry.sub_keys()
         sqlnames.append("ML001")
         self.ui.instanceBox.addItems(sqlnames)
 
@@ -67,15 +63,18 @@ class Main(QMainWindow, Ui_mainWindow):
         indexItem = f".\\{self.ui.instanceBox.currentText()}"
         self.server_name = indexItem
 
-    def handleComboSQLActivated(self):
-        if self.ui.authTypeBox.currentIndex() is 0:
-            self.ui.usernameEdit.setEnabled(False)
-            self.ui.pwdEdit.setEnabled(False)
-        else:
-            self.ui.usernameEdit.setEnabled(True)
-            self.ui.pwdEdit.setEnabled(True)
 
-        self.sql_conn_type = self.ui.authTypeBox.currentIndex()
+    #Deprecated
+    #
+    #def handleComboSQLActivated(self):
+    #    if self.ui.authTypeBox.currentIndex() is 0:
+    #        self.ui.usernameEdit.setEnabled(False)
+    #        self.ui.pwdEdit.setEnabled(False)
+    #    else:
+    #        self.ui.usernameEdit.setEnabled(True)
+    #        self.ui.pwdEdit.setEnabled(True)
+    #
+    #    self.sql_conn_type = self.ui.authTypeBox.currentIndex()
 
     def onDestChanged(self):
         if self.ui.destinationBox.currentText() == "Google Drive":
@@ -101,8 +100,8 @@ class Main(QMainWindow, Ui_mainWindow):
     def onOk_clicked(self):
 
         self.ui.databaseListWidget.clear()
-        trusted_conn = self.checkAuthType()
-        datahelper = DatabaseHelper(self.server_name, trusted_conn, self.username, self.password)
+        trusted_conn = "yes"
+        datahelper = DatabaseHelper(self.server_name, trusted_conn)
         databases = datahelper.displayAllDatabases()
         for data in databases:
             item = QtWidgets.QListWidgetItem(data)

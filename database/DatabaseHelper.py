@@ -12,18 +12,11 @@ from threading import Thread
 
 class DatabaseHelper:
     @exception
-    def __init__(self, server, trust_conn, username, password):
-        if trust_conn is 'yes':
-            params = (r"DRIVER={ODBC Driver 17 for SQL Server};"
-                      f"SERVER={server};"
-                      f"Trusted_Connection={trust_conn};"
-                     )
-        else:
-            params = (r"DRIVER={ODBC Driver 17 for SQL Server};"
-                      f"SERVER={server};"
-                      f"username={username};"
-                      f"password={password};"
-                      )
+    def __init__(self, server, trust_conn):
+        params = (r"DRIVER={ODBC Driver 17 for SQL Server};"
+                  f"SERVER={server};"
+                  f"Trusted_Connection={trust_conn};"
+                  )
         try:
             self.conn = pyodbc.connect(params)
             self.cursor = self.conn.cursor()
