@@ -1,16 +1,16 @@
 import os
 import sys
 
-from PySide2 import QtCore, QtWidgets, QtGui
-from PySide2.QtCore import QFile, QIODevice, Slot, Signal, QRunnable
+from PySide2 import QtCore, QtWidgets
+from PySide2.QtCore import QFile, QIODevice
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QAbstractButton
 
 from os.path import expanduser
 
 from ui.mainWindow import Ui_mainWindow
 from database.DatabaseHelper import DatabaseHelper
-from system.registry import Registry
+from common.registry import Registry
 
 
 # TODO: backup to device, choose file, test connection, choosing databases
@@ -20,18 +20,25 @@ class Main(QMainWindow, Ui_mainWindow):
 
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
+        self.ui.ma
         self.ui.connectionButton.clicked.connect(self.testConnection)
         self.ui.connectionButton.show()
         self.registry = Registry()
         self.server_name = self.ui.instanceBox.currentText()
+        self.ui.timeSpinBox.setEnabled(False)
+        self.ui.setButton.setEnabled(False)
+        self.ui.resetButton.setEnabled(False)
+
 
         self.ui.instanceBox.activated.connect(self.handleComboActivated)
 
         self.ui.chooseButton.clicked.connect(self.chooseDirectory)
+        self.ui.enableCheckBox.clicked.connect(self.onCheckBoxState)
         self.ui.destinationBox.activated[str].connect(self.onDestChanged)
         self.ui.okButton.clicked.connect(self.onOk_clicked)
         self.ui.backupButton.clicked.connect(self.onBackupClicked)
         self.ui.connectionLabel.setVisible(False)
+
 
 
         self.populate_instance()
@@ -133,6 +140,14 @@ class Main(QMainWindow, Ui_mainWindow):
                 checkedItems.append(checkedDB.item(index).text())
         print(checkedItems)
         return checkedItems
+
+
+    def onCheckBoxState(self):
+        self.ui.enableCheckBox.checkState()
+        self.ui.enableCheckBox.setEnabled(True)
+        self.ui.timeSpinBox.setEnabled(True)
+        self.ui.resetButton.setEnabled(True)
+        self.ui.setButton.setEnabled(True)
 
 if __name__ == "__main__":
     # Qt app

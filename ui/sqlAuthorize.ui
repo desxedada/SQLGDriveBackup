@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>sqlAuthWindow</class>
+ <widget class="QMainWindow" name="sqlAuthWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SQL Authentication</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QGroupBox" name="authBox">
@@ -84,19 +84,6 @@
         <bool>true</bool>
        </property>
       </widget>
-     </item>
-     <item row="4" column="0">
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item row="4" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_3">

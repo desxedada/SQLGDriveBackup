@@ -1,10 +1,7 @@
-import schedule
-import time
+from apscheduler.schedulers.background import BackgroundScheduler
 
-def create_schedule_job(timeslot):
-    try:
-        schedule.jobs = []
-    except:
+scheduler = BackgroundScheduler({
 
 
 
+})

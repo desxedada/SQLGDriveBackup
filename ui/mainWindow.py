@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainWindow.ui',
 # licensing of 'mainWindow.ui' applies.
 #
-# Created: Tue Nov 24 15:05:19 2020
+# Created: Wed Nov 25 10:46:38 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -27,6 +27,7 @@ class Ui_mainWindow(object):
         self.label.setObjectName("label")
         self.formGroupBox_2 = QtWidgets.QGroupBox(self.frame)
         self.formGroupBox_2.setGeometry(QtCore.QRect(10, 40, 391, 151))
+        self.formGroupBox_2.setAutoFillBackground(True)
         self.formGroupBox_2.setObjectName("formGroupBox_2")
         self.databaseLayout = QtWidgets.QFormLayout(self.formGroupBox_2)
         self.databaseLayout.setContentsMargins(10, 10, 10, 10)
@@ -91,6 +92,7 @@ class Ui_mainWindow(object):
         self.horizontalLayout_2.addWidget(self.backupButton)
         self.logBox = QtWidgets.QGroupBox(self.frame)
         self.logBox.setGeometry(QtCore.QRect(10, 320, 391, 303))
+        self.logBox.setAutoFillBackground(True)
         self.logBox.setObjectName("logBox")
         self.gridLayout = QtWidgets.QGridLayout(self.logBox)
         self.gridLayout.setContentsMargins(10, 10, 10, 10)
@@ -105,10 +107,12 @@ class Ui_mainWindow(object):
         self.logtextEdit.setObjectName("logtextEdit")
         self.gridLayout.addWidget(self.logtextEdit, 3, 0, 1, 1)
         self.label_10 = QtWidgets.QLabel(self.logBox)
+        self.label_10.setAutoFillBackground(True)
         self.label_10.setObjectName("label_10")
         self.gridLayout.addWidget(self.label_10, 0, 0, 1, 1)
         self.scheduleWidget = QtWidgets.QWidget(self.frame)
         self.scheduleWidget.setGeometry(QtCore.QRect(10, 200, 391, 112))
+        self.scheduleWidget.setAutoFillBackground(True)
         self.scheduleWidget.setObjectName("scheduleWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.scheduleWidget)
         self.verticalLayout.setContentsMargins(10, 10, 10, 10)
@@ -138,6 +142,9 @@ class Ui_mainWindow(object):
         self.setButton = QtWidgets.QPushButton(self.scheduleWidget)
         self.setButton.setObjectName("setButton")
         self.horizontalLayout_3.addWidget(self.setButton)
+        self.resetButton = QtWidgets.QPushButton(self.scheduleWidget)
+        self.resetButton.setObjectName("resetButton")
+        self.horizontalLayout_3.addWidget(self.resetButton)
         self.label_8 = QtWidgets.QLabel(self.scheduleWidget)
         self.label_8.setText("")
         self.label_8.setObjectName("label_8")
@@ -191,7 +198,8 @@ class Ui_mainWindow(object):
         self.label_9.setText(QtWidgets.QApplication.translate("mainWindow", "Schedule Backups", None, -1))
         self.enableCheckBox.setText(QtWidgets.QApplication.translate("mainWindow", "Enabled", None, -1))
         self.label_4.setText(QtWidgets.QApplication.translate("mainWindow", "Full Backup Daily at", None, -1))
-        self.setButton.setText(QtWidgets.QApplication.translate("mainWindow", "Set", None, -1))
+        self.setButton.setText(QtWidgets.QApplication.translate("mainWindow", "Set schedule", None, -1))
+        self.resetButton.setText(QtWidgets.QApplication.translate("mainWindow", "Reset", None, -1))
         self.scheduleBackupLabel.setText(QtWidgets.QApplication.translate("mainWindow", "TextLabel", None, -1))
         self.menuLicense.setTitle(QtWidgets.QApplication.translate("mainWindow", "Help", None, -1))
         self.menuAdvanced.setTitle(QtWidgets.QApplication.translate("mainWindow", "Advanced", None, -1))
