@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>723</height>
+    <width>407</width>
+    <height>831</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>431</width>
-      <height>691</height>
+      <width>411</width>
+      <height>811</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -194,7 +194,7 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>640</y>
+       <y>730</y>
        <width>131</width>
        <height>41</height>
       </rect>
@@ -226,7 +226,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>320</y>
+       <y>410</y>
        <width>391</width>
        <height>303</height>
       </rect>
@@ -247,17 +247,17 @@
       <property name="bottomMargin">
        <number>10</number>
       </property>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QListWidget" name="databaseListWidget"/>
       </item>
-      <item row="2" column="0">
+      <item row="3" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
          <string>Log</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="4" column="0">
        <widget class="QTextEdit" name="logtextEdit"/>
       </item>
       <item row="0" column="0">
@@ -278,7 +278,7 @@
        <x>10</x>
        <y>200</y>
        <width>391</width>
-       <height>112</height>
+       <height>191</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -298,25 +298,42 @@
        <number>10</number>
       </property>
       <item>
-       <widget class="QLabel" name="label_9">
-        <property name="font">
-         <font>
-          <pointsize>12</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Schedule Backups</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="enableCheckBox">
-        <property name="text">
-         <string>Enabled</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="font">
+           <font>
+            <pointsize>12</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Schedule Backups</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="enableCheckBox">
+          <property name="text">
+           <string>Enabled</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -334,7 +351,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="timeSpinBox"/>
+         <widget class="QTimeEdit" name="scheduleTimeEdit"/>
         </item>
         <item>
          <spacer name="horizontalSpacer_3">
@@ -350,6 +367,66 @@
          </spacer>
         </item>
         <item>
+         <widget class="QLabel" name="label_8">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <property name="leftMargin">
+         <number>10</number>
+        </property>
+        <property name="topMargin">
+         <number>3</number>
+        </property>
+        <property name="rightMargin">
+         <number>10</number>
+        </property>
+        <property name="bottomMargin">
+         <number>3</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Start From</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="beginDateEdit"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>From</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDateEdit" name="endDateEdit"/>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
          <widget class="QPushButton" name="setButton">
           <property name="text">
            <string>Set schedule</string>
@@ -360,13 +437,6 @@
          <widget class="QPushButton" name="resetButton">
           <property name="text">
            <string>Reset</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string/>
           </property>
          </widget>
         </item>
@@ -392,7 +462,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>415</width>
+     <width>407</width>
      <height>21</height>
     </rect>
    </property>
