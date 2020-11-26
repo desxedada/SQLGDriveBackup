@@ -272,7 +272,7 @@
       </item>
      </layout>
     </widget>
-    <widget class="QWidget" name="scheduleWidget" native="true">
+    <widget class="QGroupBox" name="scheduleGroupBox">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -366,25 +366,18 @@
           </property>
          </spacer>
         </item>
-        <item>
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_7">
         <property name="leftMargin">
-         <number>10</number>
+         <number>5</number>
         </property>
         <property name="topMargin">
          <number>3</number>
         </property>
         <property name="rightMargin">
-         <number>10</number>
+         <number>5</number>
         </property>
         <property name="bottomMargin">
          <number>3</number>
@@ -443,14 +436,18 @@
        </layout>
       </item>
       <item>
-       <widget class="QLabel" name="scheduleBackupLabel">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLabel" name="scheduleBackupLabel">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

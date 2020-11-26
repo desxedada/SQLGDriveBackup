@@ -4,12 +4,12 @@ import sys
 from PySide2 import QtCore, QtWidgets
 from PySide2.QtCore import QFile, QIODevice
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QAbstractButton
+from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
 
 from os.path import expanduser
 
 from ui.mainWindow import Ui_mainWindow
-from database.DatabaseHelper import DatabaseHelper
+from common.DatabaseHelper import DatabaseHelper
 from common.registry import Registry
 
 
@@ -18,17 +18,18 @@ class Main(QMainWindow, Ui_mainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
+        #Variables
+        self.scheduleTimeNotify = ""
+
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
-        self.ui.ma
         self.ui.connectionButton.clicked.connect(self.testConnection)
         self.ui.connectionButton.show()
         self.registry = Registry()
         self.server_name = self.ui.instanceBox.currentText()
-        self.ui.timeSpinBox.setEnabled(False)
+        self.ui.scheduleBackupLabel.setText(self.scheduleTimeNotify)
         self.ui.setButton.setEnabled(False)
         self.ui.resetButton.setEnabled(False)
-
 
         self.ui.instanceBox.activated.connect(self.handleComboActivated)
 
@@ -38,8 +39,6 @@ class Main(QMainWindow, Ui_mainWindow):
         self.ui.okButton.clicked.connect(self.onOk_clicked)
         self.ui.backupButton.clicked.connect(self.onBackupClicked)
         self.ui.connectionLabel.setVisible(False)
-
-
 
         self.populate_instance()
 
@@ -119,10 +118,10 @@ class Main(QMainWindow, Ui_mainWindow):
     def onBackupClicked(self):
         msgbox = QMessageBox
         try:
-            trusted_conn = self.checkAuthType()
+            #trusted_conn = self.checkAuthType()
             path = self.ui.destEdit.text()
             backup_items = self.getCheckedItems()
-            datahelper = DatabaseHelper(self.server_name, trusted_conn, self.username, self.password)
+            datahelper = DatabaseHelper(self.server_name, "yes")
             if path is not "" or None:
                 for items in backup_items:
                     datahelper.backup_database(items, path)

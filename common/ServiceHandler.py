@@ -5,8 +5,9 @@ import win32service
 import win32event
 import servicemanager
 import socket
+import schedule
 
-class AppSVC(win32serviceutil.ServiceFramework):
+class ScheduleSVC(win32serviceutil.ServiceFramework):
     svc_name = "SQLBackupTool"
     svc_display_name = "SQLBackupTool Service"
     svc_description = "Backup Tool for SQL Database"
@@ -19,6 +20,7 @@ class AppSVC(win32serviceutil.ServiceFramework):
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+
         win32event.SetEvent(self.hWaitStop)
 
     def SvcDoRun(self):
