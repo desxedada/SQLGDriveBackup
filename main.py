@@ -55,7 +55,7 @@ class Main(QMainWindow, Ui_mainWindow):
     def testConnection(self):
         trusted_conn = "yes"
         datahelper = DatabaseHelper(self.server_name, trusted_conn)
-        msg = datahelper.test_connection()
+        msg = datahelper.main()
         self.ui.connectionLabel.setText(msg)
         self.ui.connectionLabel.setVisible(True)
 

@@ -16,7 +16,11 @@ class ScheduleSVC(win32serviceutil.ServiceFramework):
         win32serviceutil.ServiceFramework.__init__(self, args)
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
         socket.setdefaulttimeout(60)
+        self
 
+    @classmethod
+    def parse_command_line(cls):
+        win32serviceutil.HandleCommandLine(cls)
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
@@ -38,5 +42,8 @@ class ScheduleSVC(win32serviceutil.ServiceFramework):
         pass
 
     def main(self):
-        # main class to be overridden
-        pass
+        print
+        "running"
+
+if __name__ == '__main__':
+    win32serviceutil.HandleCommandLine(ScheduleSVC)
