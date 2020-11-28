@@ -19,4 +19,4 @@ dependencies:
   - google-api-python-client
   - bokeh
   - pip=20.2.*
-  - schedule
+  - apscheduler

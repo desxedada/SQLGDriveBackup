@@ -6,14 +6,50 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>407</width>
-    <height>831</height>
+    <width>411</width>
+    <height>844</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>411</width>
+    <height>844</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>411</width>
+    <height>844</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>SQLServerBackupTool</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>411</width>
+     <height>800</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>411</width>
+     <height>800</height>
+    </size>
+   </property>
    <widget class="QFrame" name="frame">
     <property name="geometry">
      <rect>
@@ -89,11 +125,6 @@
         <item>
          <property name="text">
           <string>Device</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Google Drive</string>
          </property>
         </item>
        </widget>
@@ -194,7 +225,7 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>730</y>
+       <y>740</y>
        <width>131</width>
        <height>41</height>
       </rect>
@@ -226,7 +257,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>410</y>
+       <y>430</y>
        <width>391</width>
        <height>303</height>
       </rect>
@@ -278,7 +309,7 @@
        <x>10</x>
        <y>200</y>
        <width>391</width>
-       <height>191</height>
+       <height>221</height>
       </rect>
      </property>
      <property name="autoFillBackground">
@@ -415,6 +446,13 @@
           </property>
          </spacer>
         </item>
+        <item>
+         <widget class="QCheckBox" name="dailyCheckBox">
+          <property name="text">
+           <string>Daily</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
       <item>
@@ -436,16 +474,16 @@
        </layout>
       </item>
       <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Schedule Jobs</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_10">
         <item>
-         <widget class="QLabel" name="scheduleBackupLabel">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
+         <widget class="QListWidget" name="listWidget"/>
         </item>
        </layout>
       </item>
@@ -459,7 +497,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>407</width>
+     <width>411</width>
      <height>21</height>
     </rect>
    </property>
