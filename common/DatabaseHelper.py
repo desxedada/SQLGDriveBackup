@@ -44,18 +44,18 @@ class DatabaseHelper:
 
 
     @exception
-    def backup_database(self, name, path):
+    def backup_database(self, **kwargs):
             self.conn.autocommit = True
             timestamp = time.strftime("%Y-%m-%d_%H-%M")
             self.cursor.execute(
-                f"BACKUP DATABASE {name} TO DISK = '{path}\\{name}_{timestamp}.bak'")
-            logging.info(f"{name} is being backed up")
+                f"BACKUP DATABASE {kwargs[0]} TO DISK = '{kwargs[1]}\\{kwargs[0]}_{timestamp}.bak'")
+            logging.info(f"{kwargs[0]} is being backed up")
 
 
     def run_cron_job(self,name,path):
         JOBS = {
             'job': '__main__:backup_database',
-            'args': (name, path),
+            'kwargs': (name, path),
             'seconds': 10
         }
         mys = customSchedule()

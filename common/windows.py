@@ -1,10 +1,10 @@
 # msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85).aspx
 import ctypes
-import logging
 import sys
-import enum
 import winreg
-
+import win32api
+import win32con
+import win32gui_struct
 
 class Registry:
 
@@ -30,3 +30,4 @@ class Registry:
         except WindowsError:
             pass
         return name_list
+

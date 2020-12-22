@@ -1,25 +1,25 @@
 import os
 import sys
 
-from PySide2 import QtCore, QtWidgets
+from PySide2 import QtCore, QtWidgets, QtGui
 from PySide2.QtCore import QFile, QIODevice
+from PySide2.QtGui import QIcon
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QSystemTrayIcon, QAction, QMenu
 
 from os.path import expanduser
 
 from ui.mainWindow import Ui_mainWindow
 from common.DatabaseHelper import DatabaseHelper
-from common.registry import Registry
+from common.windows import Registry
 
-
-# TODO: backup to device, choose file, test connection, choosing databases
 class Main(QMainWindow, Ui_mainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
 
         #Variables
         self.scheduleTimeNotify = ""
+
 
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
@@ -45,7 +45,21 @@ class Main(QMainWindow, Ui_mainWindow):
 
         self.populate_instance()
 
+        self.tray_icon = QSystemTrayIcon(self)
+        self.tray_icon.setIcon(QIcon("database-logo.png"))
+        show_action = QAction("Show", self)
+        quit_action = QAction("Exit", self)
+        hide_action = QAction("Hide", self)
+        show_action.triggered().connect(self.show)
+        hide_action.triggered().connect(self.hide)
+        quit_action.triggered().connect(lambda: sys.exit())
+        tray_menu = QMenu()
+        tray_menu.addAction(show_action)
+        tray_menu.addAction(hide_action)
+        tray_menu.addAction(quit_action)
+        self.tray_icon.setContextMenu(tray_menu)
         # Show Window
+        self.tray_icon.show()
         self.show()
 
     # Check the type of SQL server authentication
@@ -53,7 +67,8 @@ class Main(QMainWindow, Ui_mainWindow):
     #    if self.ui.authTypeBox.currentIndex() is 0:
     #        return "yes"
     #    else:
-    #        return "no"
+
+
 
     def testConnection(self):
         trusted_conn = "yes"
@@ -157,21 +172,18 @@ class Main(QMainWindow, Ui_mainWindow):
         self.ui.resetButton.setEnabled(True)
         self.ui.setButton.setEnabled(True)
 
-if __name__ == "__main__":
-    # Qt app
-    app = QApplication(sys.argv)
-    ui_file_name = "ui/mainWindow.ui"
-    ui_file = QFile(ui_file_name)
-    if not ui_file.open(QIODevice.ReadOnly):
-        print("Cannot open {}: {}".format(ui_file_name, ui_file.errorString()))
-        sys.exit(-1)
-    loader = QUiLoader()
-    window = loader.load(ui_file)
-    ui_file.close()
-    if not window:
-        print(loader.errorString())
-        sys.exit(-1)
-    window.show()
 
-    window = Main()
+
+def main():
+    app = QtWidgets.QApplication(sys.argv)
+    mainWindow = QtWidgets.QMainWindow()
+    w = QtWidgets.QWidget()
+    ui = Ui_mainWindow()
+    ui.setupUi(mainWindow)
+
+    mainWindow.show()
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()

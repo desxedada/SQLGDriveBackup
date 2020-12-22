@@ -29,7 +29,7 @@ class customSchedule(APS):
     def __init__(self):
         APS.__init__(self)
 
-    def add_schedule(self, job, time):
-        self.add_cron_job(job, args=[name,path],second=time)
+    def add_schedule(self, job,arg,time):
+        self.add_cron_job(job, kwargs=[arg],second=time)
 
 

@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainWindow.ui',
 # licensing of 'mainWindow.ui' applies.
 #
-# Created: Mon Dec 21 09:32:37 2020
+# Created: Tue Dec 22 15:15:31 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -156,12 +156,14 @@ class Ui_mainWindow(object):
         self.label_3.setObjectName("label_3")
         self.horizontalLayout_7.addWidget(self.label_3)
         self.beginDateEdit = QtWidgets.QDateEdit(self.scheduleGroupBox)
+        self.beginDateEdit.setCalendarPopup(True)
         self.beginDateEdit.setObjectName("beginDateEdit")
         self.horizontalLayout_7.addWidget(self.beginDateEdit)
         self.label_2 = QtWidgets.QLabel(self.scheduleGroupBox)
         self.label_2.setObjectName("label_2")
         self.horizontalLayout_7.addWidget(self.label_2)
         self.endDateEdit = QtWidgets.QDateEdit(self.scheduleGroupBox)
+        self.endDateEdit.setCalendarPopup(True)
         self.endDateEdit.setObjectName("endDateEdit")
         self.horizontalLayout_7.addWidget(self.endDateEdit)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -206,6 +208,8 @@ class Ui_mainWindow(object):
         self.menuAdvanced.addAction(self.actionSQL_Authentication)
         self.menuBar.addAction(self.menuAdvanced.menuAction())
         self.menuBar.addAction(self.menuLicense.menuAction())
+
+
 
         self.retranslateUi(mainWindow)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
