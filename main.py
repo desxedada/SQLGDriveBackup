@@ -9,7 +9,7 @@ from PySide2.QtWidgets import *
 from os.path import expanduser
 
 from ui.mainWindow import Ui_mainWindow
-from common.DatabaseHelper import DatabaseHelper
+from common.DatabaseHelper import *
 from common.windows import Registry
 
 
@@ -52,8 +52,6 @@ class Main(QMainWindow, Ui_mainWindow):
         self.ui.tray_icon.setContextMenu(self.tray_menu)
         self.ui.tray_icon.show()
 
-
-
         self.ui.instanceBox.activated.connect(self.handleComboActivated)
 
         self.ui.chooseButton.clicked.connect(self.chooseDirectory)
@@ -75,14 +73,14 @@ class Main(QMainWindow, Ui_mainWindow):
 
     def testConnection(self):
         trusted_conn = "yes"
-        datahelper = DatabaseHelper(self.server_name, trusted_conn)
-        msg = datahelper.test_connection()
+        msg = test_connection(self.server_name,trusted_conn)
         self.ui.connectionLabel.setText(msg)
         self.ui.connectionLabel.setVisible(True)
 
     def populate_instance(self):
         sqlnames = self.registry.sub_keys()
         sqlnames.append("ML001")
+        self.ui.instanceBox.addItem("local")
         self.ui.instanceBox.addItems(sqlnames)
 
     # handlers
@@ -127,8 +125,7 @@ class Main(QMainWindow, Ui_mainWindow):
     def onOk_clicked(self):
         self.ui.databaseListWidget.clear()
         trusted_conn = "yes"
-        datahelper = DatabaseHelper(self.server_name, trusted_conn)
-        databases = datahelper.displayAllDatabases()
+        databases = displayAllDatabases(self.server_name,trusted_conn)
         for data in databases:
             item = QtWidgets.QListWidgetItem(data)
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
@@ -137,15 +134,15 @@ class Main(QMainWindow, Ui_mainWindow):
 
     def onBackupClicked(self):
         msgbox = QMessageBox
+        trusted_conn = "yes"
         try:
             #trusted_conn = self.checkAuthType()
             path = self.ui.destEdit.text()
             backup_items = self.getCheckedItems()
-            datahelper = DatabaseHelper(self.server_name, "yes")
             if path is not "" or None:
                 if not self.ui.enableCheckBox.checkState():
                     for items in backup_items:
-                        datahelper.backup_database(items, path)
+                        backup_database(self.server_name,trusted_conn,items,path)
                     msgbox.information(self,"",f"Databases has been backup!")
             else:
                 msgbox.warning(self, "Warning", "Backup folder destination not chosen")

@@ -26,10 +26,16 @@ class APS(object):
             self._scheduler.shutdown()
 
 class customSchedule(APS):
-    def __init__(self):
+    def __init__(self,job,arg,time):
         APS.__init__(self)
+        self.job = job
+        self.arg = arg
+        self.time = time
 
-    def add_schedule(self, job,arg,time):
-        self.add_cron_job(job, kwargs=[arg],second=time)
+    def add_schedule(self):
+        self.add_cron_job(
+            self.job,
+            args=self.arg,
+            second=self.time)
 
 
