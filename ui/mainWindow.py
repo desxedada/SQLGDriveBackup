@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainWindow.ui',
 # licensing of 'mainWindow.ui' applies.
 #
-# Created: Tue Dec 22 15:15:31 2020
+# Created: Sat Dec 26 15:49:10 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -194,8 +194,6 @@ class Ui_mainWindow(object):
         self.menuBar.setObjectName("menuBar")
         self.menuLicense = QtWidgets.QMenu(self.menuBar)
         self.menuLicense.setObjectName("menuLicense")
-        self.menuAdvanced = QtWidgets.QMenu(self.menuBar)
-        self.menuAdvanced.setObjectName("menuAdvanced")
         mainWindow.setMenuBar(self.menuBar)
         self.actionLicense = QtWidgets.QAction(mainWindow)
         self.actionLicense.setObjectName("actionLicense")
@@ -205,11 +203,7 @@ class Ui_mainWindow(object):
         self.actionSQL_Authentication.setObjectName("actionSQL_Authentication")
         self.menuLicense.addAction(self.actionLicense)
         self.menuLicense.addAction(self.actionAbout)
-        self.menuAdvanced.addAction(self.actionSQL_Authentication)
-        self.menuBar.addAction(self.menuAdvanced.menuAction())
         self.menuBar.addAction(self.menuLicense.menuAction())
-
-
 
         self.retranslateUi(mainWindow)
         QtCore.QMetaObject.connectSlotsByName(mainWindow)
@@ -237,7 +231,6 @@ class Ui_mainWindow(object):
         self.resetButton.setText(QtWidgets.QApplication.translate("mainWindow", "Reset", None, -1))
         self.scheduleBackupLabel.setText(QtWidgets.QApplication.translate("mainWindow", "TextLabel", None, -1))
         self.menuLicense.setTitle(QtWidgets.QApplication.translate("mainWindow", "Help", None, -1))
-        self.menuAdvanced.setTitle(QtWidgets.QApplication.translate("mainWindow", "Advanced", None, -1))
         self.actionLicense.setText(QtWidgets.QApplication.translate("mainWindow", "License", None, -1))
         self.actionAbout.setText(QtWidgets.QApplication.translate("mainWindow", "About", None, -1))
         self.actionSQL_Authentication.setText(QtWidgets.QApplication.translate("mainWindow", "SQL Authentication", None, -1))

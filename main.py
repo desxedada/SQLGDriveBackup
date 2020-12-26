@@ -2,24 +2,23 @@ import os
 import sys
 
 from PySide2 import QtCore, QtWidgets, QtGui
-from PySide2.QtCore import QFile, QIODevice
-from PySide2.QtGui import QIcon
+from PySide2.QtCore import QFile, QIODevice, QObject
+from PySide2.QtGui import *
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QSystemTrayIcon, QAction, QMenu
-
+from PySide2.QtWidgets import *
 from os.path import expanduser
 
 from ui.mainWindow import Ui_mainWindow
 from common.DatabaseHelper import DatabaseHelper
 from common.windows import Registry
 
+
 class Main(QMainWindow, Ui_mainWindow):
     def __init__(self):
-        QMainWindow.__init__(self)
+        super(Main,self).__init__()
 
         #Variables
         self.scheduleTimeNotify = ""
-
 
         self.ui = Ui_mainWindow()
         self.ui.setupUi(self)
@@ -32,35 +31,39 @@ class Main(QMainWindow, Ui_mainWindow):
         self.ui.resetButton.setEnabled(False)
         self.ui.centralwidget.setMaximumHeight(790)
         self.ui.centralwidget.setMaximumWidth(407)
+        self.ui.scheduleBackupLabel.setVisible(False)
+
+        self.ui.tray_icon = QSystemTrayIcon(self)
+        self.ui.tray_icon.setIcon(QIcon("database-logo.png"))
+
+        self.show_action = QAction("Show", self)
+        self.quit_action = QAction("Exit", self)
+        self.hide_action = QAction("Hide", self)
+
+        self.tray_menu = QMenu()
+        self.tray_menu.addAction(self.show_action)
+        self.tray_menu.addAction(self.hide_action)
+        self.tray_menu.addAction(self.quit_action)
+
+        self.show_action.triggered.connect(lambda: self.setVisible(True))
+        self.hide_action.triggered.connect(lambda:  self.setVisible(False))
+        self.quit_action.triggered.connect(lambda: sys.exit())
+
+        self.ui.tray_icon.setContextMenu(self.tray_menu)
+        self.ui.tray_icon.show()
+
 
 
         self.ui.instanceBox.activated.connect(self.handleComboActivated)
 
         self.ui.chooseButton.clicked.connect(self.chooseDirectory)
-        self.ui.enableCheckBox.clicked.connect(self.onCheckBoxState)
+        self.ui.enableCheckBox.stateChanged.connect(self.onCheckBoxState)
         self.ui.destinationBox.activated[str].connect(self.onDestChanged)
         self.ui.okButton.clicked.connect(self.onOk_clicked)
         self.ui.backupButton.clicked.connect(self.onBackupClicked)
         self.ui.connectionLabel.setVisible(False)
 
         self.populate_instance()
-
-        self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon("database-logo.png"))
-        show_action = QAction("Show", self)
-        quit_action = QAction("Exit", self)
-        hide_action = QAction("Hide", self)
-        show_action.triggered().connect(self.show)
-        hide_action.triggered().connect(self.hide)
-        quit_action.triggered().connect(lambda: sys.exit())
-        tray_menu = QMenu()
-        tray_menu.addAction(show_action)
-        tray_menu.addAction(hide_action)
-        tray_menu.addAction(quit_action)
-        self.tray_icon.setContextMenu(tray_menu)
-        # Show Window
-        self.tray_icon.show()
-        self.show()
 
     # Check the type of SQL server authentication
     #def checkAuthType(self):
@@ -164,25 +167,28 @@ class Main(QMainWindow, Ui_mainWindow):
         print(checkedItems)
         return checkedItems
 
-
-    def onCheckBoxState(self):
-        self.ui.enableCheckBox.checkState()
-        self.ui.enableCheckBox.setEnabled(True)
-        self.ui.timeSpinBox.setEnabled(True)
-        self.ui.resetButton.setEnabled(True)
-        self.ui.setButton.setEnabled(True)
-
+    @QtCore.Slot(QtCore.Qt.CheckState)
+    def onCheckBoxState(self,state):
+        self.ui.enableCheckBox.setEnabled(state == QtCore.Qt.Checked)
+        if state != QtCore.Qt.Checked:
+            self.ui.enableCheckBox.setEnabled(True)
+            self.ui.resetButton.setEnabled(True)
+            self.ui.setButton.setEnabled(True)
+        else:
+            self.ui.enableCheckBox.setEnabled(False)
+            self.ui.resetButton.setEnabled(False)
+            self.ui.setButton.setEnabled(False)
 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    mainWindow = QtWidgets.QMainWindow()
-    w = QtWidgets.QWidget()
-    ui = Ui_mainWindow()
+    mainWindow = QMainWindow()
+    ui = Main()
     ui.setupUi(mainWindow)
+    ui.show()
 
-    mainWindow.show()
     sys.exit(app.exec_())
+
 
 
 if __name__ == '__main__':
