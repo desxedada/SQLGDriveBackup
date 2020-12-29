@@ -3,7 +3,7 @@
 # Form implementation generated from reading ui file 'mainWindow.ui',
 # licensing of 'mainWindow.ui' applies.
 #
-# Created: Sat Dec 26 15:49:10 2020
+# Created: Tue Dec 29 09:41:50 2020
 #      by: pyside2-uic  running on PySide2 5.13.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -47,7 +47,6 @@ class Ui_mainWindow(object):
         self.databaseLayout.setWidget(1, QtWidgets.QFormLayout.LabelRole, self.label_7)
         self.destinationBox = QtWidgets.QComboBox(self.formGroupBox_2)
         self.destinationBox.setObjectName("destinationBox")
-        self.destinationBox.addItem("")
         self.destinationBox.addItem("")
         self.databaseLayout.setWidget(1, QtWidgets.QFormLayout.FieldRole, self.destinationBox)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
@@ -149,26 +148,6 @@ class Ui_mainWindow(object):
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_3.addItem(spacerItem3)
         self.verticalLayout.addLayout(self.horizontalLayout_3)
-        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_7.setContentsMargins(5, 3, 5, 3)
-        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.label_3 = QtWidgets.QLabel(self.scheduleGroupBox)
-        self.label_3.setObjectName("label_3")
-        self.horizontalLayout_7.addWidget(self.label_3)
-        self.beginDateEdit = QtWidgets.QDateEdit(self.scheduleGroupBox)
-        self.beginDateEdit.setCalendarPopup(True)
-        self.beginDateEdit.setObjectName("beginDateEdit")
-        self.horizontalLayout_7.addWidget(self.beginDateEdit)
-        self.label_2 = QtWidgets.QLabel(self.scheduleGroupBox)
-        self.label_2.setObjectName("label_2")
-        self.horizontalLayout_7.addWidget(self.label_2)
-        self.endDateEdit = QtWidgets.QDateEdit(self.scheduleGroupBox)
-        self.endDateEdit.setCalendarPopup(True)
-        self.endDateEdit.setObjectName("endDateEdit")
-        self.horizontalLayout_7.addWidget(self.endDateEdit)
-        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_7.addItem(spacerItem4)
-        self.verticalLayout.addLayout(self.horizontalLayout_7)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
         self.setButton = QtWidgets.QPushButton(self.scheduleGroupBox)
@@ -213,7 +192,6 @@ class Ui_mainWindow(object):
         self.label_5.setText(QtWidgets.QApplication.translate("mainWindow", "Server Name", None, -1))
         self.label_7.setText(QtWidgets.QApplication.translate("mainWindow", "Backup Destination", None, -1))
         self.destinationBox.setItemText(0, QtWidgets.QApplication.translate("mainWindow", "Device", None, -1))
-        self.destinationBox.setItemText(1, QtWidgets.QApplication.translate("mainWindow", "Google Drive", None, -1))
         self.chooseButton.setText(QtWidgets.QApplication.translate("mainWindow", "Choose", None, -1))
         self.connectionLabel.setText(QtWidgets.QApplication.translate("mainWindow", "TextLabel", None, -1))
         self.connectionButton.setText(QtWidgets.QApplication.translate("mainWindow", "Test Connection", None, -1))
@@ -225,11 +203,9 @@ class Ui_mainWindow(object):
         self.label_9.setText(QtWidgets.QApplication.translate("mainWindow", "Schedule Backups", None, -1))
         self.enableCheckBox.setText(QtWidgets.QApplication.translate("mainWindow", "Enabled", None, -1))
         self.label_4.setText(QtWidgets.QApplication.translate("mainWindow", "Full Backup Daily at", None, -1))
-        self.label_3.setText(QtWidgets.QApplication.translate("mainWindow", "Start From", None, -1))
-        self.label_2.setText(QtWidgets.QApplication.translate("mainWindow", "From", None, -1))
         self.setButton.setText(QtWidgets.QApplication.translate("mainWindow", "Set schedule", None, -1))
         self.resetButton.setText(QtWidgets.QApplication.translate("mainWindow", "Reset", None, -1))
-        self.scheduleBackupLabel.setText(QtWidgets.QApplication.translate("mainWindow", "TextLabel", None, -1))
+        self.scheduleBackupLabel.setText(QtWidgets.QApplication.translate("mainWindow", "Next Schedule:", None, -1))
         self.menuLicense.setTitle(QtWidgets.QApplication.translate("mainWindow", "Help", None, -1))
         self.actionLicense.setText(QtWidgets.QApplication.translate("mainWindow", "License", None, -1))
         self.actionAbout.setText(QtWidgets.QApplication.translate("mainWindow", "About", None, -1))

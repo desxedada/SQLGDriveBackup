@@ -1,57 +1,93 @@
-import datetime
-import sys
-import apscheduler
 import time
 import pyodbc
 import logging
+from datetime import datetime, timedelta
+from time import sleep
+
+from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
+from apscheduler.schedulers.background import BackgroundScheduler as Scheduler
 
 from common.APS import customSchedule
-from log.Logger import exception
-from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
-from apscheduler.schedulers.background import BackgroundScheduler, BaseScheduler
-from apscheduler.executors.pool import ThreadPoolExecutor, ProcessPoolExecutor
 
-def initialize_params(server,trust_conn):
-    params = (r"DRIVER={ODBC Driver 17 for SQL Server};"
-                  f"SERVER={server};"
-                  f"Trusted_Connection={trust_conn};"
+
+class APS(object):
+    def __init__(self):
+        self._cron_jobs = {}
+        self._interval_jobs = {}
+        self._scheduler = None
+
+    def add_cron_job(self, job, **kwargs):
+        self._cron_jobs[job.__name__] = (job, kwargs)
+        return len(self._cron_jobs)
+
+    def add_interval_jobs(self, job, **kwargs):
+        self._interval_jobs[job.__name__] = (job, kwargs)
+        return len(self._interval_jobs)
+
+    def start_scheduler(self):
+        if len(self._cron_jobs) <= 0:
+            return False
+        self._scheduler = Scheduler()
+        for job, kwargs in self._interval_jobs.values():
+            self._scheduler.add_job(job, 'interval', id=job.__name__, **kwargs)
+        for job, kwargs in self._cron_jobs.values():
+            self._scheduler.add_job(job, 'cron', id=job.__name__, **kwargs)
+        self._scheduler.start()
+        return True
+
+    def stop_scheduler(self):
+        if self._scheduler is not None:
+            self._scheduler.shutdown()
+
+
+class DatabaseHelper(APS):
+    def __init__(self,server,trust_conn):
+        APS.__init__(self)
+        logging.basicConfig()
+        logging.getLogger('apscheduler').setLevel(logging.DEBUG)
+        self.server = server
+        self.trust_conn = trust_conn
+
+
+    def initialize_params(self):
+        params = (r"DRIVER={ODBC Driver 17 for SQL Server};"
+                  f"SERVER={self.server};"
+                  f"Trusted_Connection={self.trust_conn};"
                   )
-    return params
+        return params
+
+    def test_connection(self):
+
+        for retry in range(3):
+            try:
+             params = self.initialize_params()
+             conn = pyodbc.connect(params)
+             cursor = conn.cursor()
+             cursor.execute("SELECT 1")
+             logging.info("Connection Established")
+             conn.close()
+             return "Connection established"
+            except pyodbc.ProgrammingError as e:
+                return "Connection Failed"
 
    
-def test_connection(server,trust_conn):
-
-    for retry in range(3):
+    def displayAllDatabases(self):
+        databases = []
         try:
-            params = initialize_params(server,trust_conn)
+            params = self.initialize_params()
             conn = pyodbc.connect(params)
             cursor = conn.cursor()
-            cursor.execute("SELECT 1")
-            logging.info("Connection Established")
-            conn.close()
-            return "Connection established"
+
+            cursor.execute("select name from sys.databases WHERE name NOT IN ('master','model','msdb','tempdb')")
+            for row in cursor.fetchall():
+                databases.append(row[0])
         except pyodbc.ProgrammingError as e:
             return "Connection Failed"
 
-   
-def displayAllDatabases(server,trust_conn):
-    databases = []
-    try:
-        params = initialize_params(server, trust_conn)
-        conn = pyodbc.connect(params)
-        cursor = conn.cursor()
+        return databases
 
-        cursor.execute("select name from sys.databases WHERE name NOT IN ('master','model','msdb','tempdb')")
-        for row in cursor.fetchall():
-            databases.append(row[0])
-    except pyodbc.ProgrammingError as e:
-        return "Connection Failed"
-
-    return databases
-
-
-def backup_database(server, trust_conn,name,path):
-        params = initialize_params(server,trust_conn)
+    def backup_database(self,name,path):
+        params = self.initialize_params()
         conn = pyodbc.connect(params)
         cursor = conn.cursor()
         conn.autocommit = True
@@ -60,28 +96,22 @@ def backup_database(server, trust_conn,name,path):
         f"BACKUP DATABASE {name} TO DISK = '{path}\\{name}_{timestamp}.bak'")
         logging.info(f"{name} is being backed up")
 
-def run_cron_job(name, path, hour):
-    # apscheduler defaults
+        #customS.stop_scheduler()
 
-    jobstores = {
-            'default': SQLAlchemyJobStore(url='sqlite:///jobs.sqlite')
-    }
-    executors = {
-        'default': ThreadPoolExecutor(20),
-        'processpool': ProcessPoolExecutor(5)
-    }
-    job_defaults = {
-        'coalesce': False,
-        'max_instances': 3
-    }
+    def print_something(self):
+        print("sdadsad")
 
-    scheduler = BackgroundScheduler(jobstores=jobstores, executors=executors, job_defaults=job_defaults)
-    scheduler.add_job(func=backup_database, args=(name, path), trigger="cron",hour=hour)
+    def add_schedule(self,job,time):
+        time = datetime.now() + timedelta(minutes=1)
+        self.add_cron_job(
+            job, hour=time.hour, minute=time.minute
+            )
+
+
+if __name__ == '__main__':
     try:
-        scheduler.start()
-        while True:
-            time.sleep(2)
-    except (KeyboardInterrupt, SystemExit):
-         scheduler.shutdown()
-
-
+        dh = DatabaseHelper(".\\DEVTEST","yes")
+        dh.add_schedule(dh.print_something,5)
+        dh.start_scheduler()
+    except Exception:
+        dh.stop_scheduler()

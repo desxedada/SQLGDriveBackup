@@ -1,8 +1,9 @@
 # msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85).aspx
 import ctypes
+import difflib
 import sys
 import winreg
-import win32api
+import wmi
 import win32con
 import win32gui_struct
 
@@ -30,4 +31,11 @@ class Registry:
         except WindowsError:
             pass
         return name_list
+
+    def get_instance(self):
+        import wmi
+
+        c = wmi.WMI()
+        for svc in c.Win32_Service():
+            print(svc.name)
 

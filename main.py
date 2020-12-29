@@ -80,7 +80,7 @@ class Main(QMainWindow, Ui_mainWindow):
     def populate_instance(self):
         sqlnames = self.registry.sub_keys()
         sqlnames.append("ML001")
-        self.ui.instanceBox.addItem("local")
+        self.ui.instanceBox.addItem("MSSQLSERVER")
         self.ui.instanceBox.addItems(sqlnames)
 
     # handlers
