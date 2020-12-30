@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 
 from PySide2 import QtCore, QtWidgets, QtGui
 from PySide2.QtCore import QFile, QIODevice, QObject
@@ -31,10 +32,10 @@ class Main(QMainWindow, Ui_mainWindow):
         self.ui.resetButton.setEnabled(False)
         self.ui.centralwidget.setMaximumHeight(790)
         self.ui.centralwidget.setMaximumWidth(407)
-        self.ui.scheduleBackupLabel.setVisible(False)
 
         self.ui.tray_icon = QSystemTrayIcon(self)
         self.ui.tray_icon.setIcon(QIcon("database-logo.png"))
+        self.ui.scheduleTimeEdit.setDateTime(QtCore.QDateTime.currentDateTimeUtc())
 
         self.show_action = QAction("Show", self)
         self.quit_action = QAction("Exit", self)
@@ -52,14 +53,18 @@ class Main(QMainWindow, Ui_mainWindow):
         self.ui.tray_icon.setContextMenu(self.tray_menu)
         self.ui.tray_icon.show()
 
+
         self.ui.instanceBox.activated.connect(self.handleComboActivated)
 
         self.ui.chooseButton.clicked.connect(self.chooseDirectory)
         self.ui.enableCheckBox.stateChanged.connect(self.onCheckBoxState)
-        self.ui.destinationBox.activated[str].connect(self.onDestChanged)
         self.ui.okButton.clicked.connect(self.onOk_clicked)
         self.ui.backupButton.clicked.connect(self.onBackupClicked)
+        self.ui.setButton.clicked.connect(self.getScheduledTime)
         self.ui.connectionLabel.setVisible(False)
+
+        #Initialize Database class
+        self.dh = DatabaseHelper()
 
         self.populate_instance()
 
@@ -68,12 +73,14 @@ class Main(QMainWindow, Ui_mainWindow):
     #    if self.ui.authTypeBox.currentIndex() is 0:
     #        return "yes"
     #    else:
-
-
+    def get_parameters(self):
+        params = self.dh.initialize_params(self.server_name, "yes")
+        return params
 
     def testConnection(self):
         trusted_conn = "yes"
-        msg = test_connection(self.server_name,trusted_conn)
+
+        msg = self.dh.test_connection(self.get_parameters())
         self.ui.connectionLabel.setText(msg)
         self.ui.connectionLabel.setVisible(True)
 
@@ -88,51 +95,51 @@ class Main(QMainWindow, Ui_mainWindow):
         indexItem = f".\\{self.ui.instanceBox.currentText()}"
         self.server_name = indexItem
 
-
-    #Deprecated
-    #
-    #def handleComboSQLActivated(self):
-    #    if self.ui.authTypeBox.currentIndex() is 0:
-    #        self.ui.usernameEdit.setEnabled(False)
-    #        self.ui.pwdEdit.setEnabled(False)
-    #    else:
-    #        self.ui.usernameEdit.setEnabled(True)
-    #        self.ui.pwdEdit.setEnabled(True)
-    #
-    #    self.sql_conn_type = self.ui.authTypeBox.currentIndex()
-
+    '''
     def onDestChanged(self):
         if self.ui.destinationBox.currentText() == "Google Drive":
             self.ui.chooseButton.setText("Authorize")
         elif self.ui.destinationBox.currentText() == "Device":
             self.ui.chooseButton.setText("Choose")
+'''
 
     def chooseDirectory(self):
+        '''
         if self.ui.destinationBox.currentText() == "Google Drive":
             self.ui.chooseButton.setText("Authorize")
             self.ui.chooseButton.clicked.connect(self.show_window)
             pass
         elif self.ui.destinationBox.currentText() == "Device":
-            dialog = QFileDialog(self)
-            dialog.setFileMode(QFileDialog.AnyFile)
-            dest_dir = QFileDialog.getExistingDirectory(self,
+        '''
+        dialog = QFileDialog(self)
+        dialog.setFileMode(QFileDialog.AnyFile)
+        dest_dir = QFileDialog.getExistingDirectory(self,
                                                         "Backup Destination Folder",
                                                         expanduser("~"),
                                                         QFileDialog.ShowDirsOnly)
 
-            self.ui.destEdit.setText(os.path.normpath(dest_dir))
+        self.ui.destEdit.setText(os.path.normpath(dest_dir))
 
     def onOk_clicked(self):
         self.ui.databaseListWidget.clear()
-        trusted_conn = "yes"
-        databases = displayAllDatabases(self.server_name,trusted_conn)
+        databases = self.dh.displayAllDatabases(self.get_parameters())
         for data in databases:
             item = QtWidgets.QListWidgetItem(data)
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             item.setCheckState(QtCore.Qt.Unchecked)
             self.ui.databaseListWidget.addItem(item)
 
+    def getScheduledTime(self):
+        sched_time = self.ui.scheduleTimeEdit.dateTime()
+        converted_time = sched_time.toPython()
+        self.ui.scheduleBackupLabel.setVisible(True)
+        self.ui.scheduleBackupLabel.setText(
+            f"Schedule Time: {converted_time.hour}:{converted_time.minute} daily."
+        )
+        return converted_time
+
     def onBackupClicked(self):
+        params = self.get_parameters()
         msgbox = QMessageBox
         trusted_conn = "yes"
         try:
@@ -142,18 +149,13 @@ class Main(QMainWindow, Ui_mainWindow):
             if path is not "" or None:
                 if not self.ui.enableCheckBox.checkState():
                     for items in backup_items:
-                        backup_database(self.server_name,trusted_conn,items,path)
+                        self.dh.backup_database(params,items,path)
                     msgbox.information(self,"",f"Databases has been backup!")
             else:
                 msgbox.warning(self, "Warning", "Backup folder destination not chosen")
         except Exception as e:
             msgbox.warning(self, "Warning", repr(e))
 
-    def setBackupParams(self,item,path):
-        param = {
-
-        }
-        return param
 
     def getCheckedItems(self):
         checkedItems = []
@@ -164,17 +166,40 @@ class Main(QMainWindow, Ui_mainWindow):
         print(checkedItems)
         return checkedItems
 
-    @QtCore.Slot(QtCore.Qt.CheckState)
-    def onCheckBoxState(self,state):
-        self.ui.enableCheckBox.setEnabled(state == QtCore.Qt.Checked)
-        if state != QtCore.Qt.Checked:
-            self.ui.enableCheckBox.setEnabled(True)
-            self.ui.resetButton.setEnabled(True)
-            self.ui.setButton.setEnabled(True)
-        else:
-            self.ui.enableCheckBox.setEnabled(False)
-            self.ui.resetButton.setEnabled(False)
+    def onCheckBoxState(self):
+        if not self.ui.enableCheckBox.isChecked():
             self.ui.setButton.setEnabled(False)
+            self.ui.resetButton.setEnabled(False)
+        else:
+            self.ui.setButton.setEnabled(True)
+            self.ui.resetButton.setEnabled(True)
+
+    def onSetClicked(self):
+        # Get attributes
+        path = self.ui.destEdit.text()
+        time_to_backup = self.getScheduledTime()
+
+        # Initialize message box
+        msgbox = QMessageBox
+
+        # Populate schedule indicator
+        self.ui.scheduleBackupLabel.setVisible(True)
+        self.ui.scheduleBackupLabel.setText(
+            f"Schedule Time: {time_to_backup.hour()}:{time_to_backup.minute()} daily."
+        )
+
+        params = self.get_parameters()
+        backup_items = self.getCheckedItems()
+        if path is not "" or None:
+            self.ui.scheduleBackupLabel.setText()
+            if not self.ui.enableCheckBox.checkState():
+                for items in backup_items:
+                    _schedule = APS()
+                    while True:
+                        _schedule.add_schedule(time_to_backup)
+                        self.dh.backup_database(params,items,path)
+        else:
+            msgbox.warning(self, "Warning", "Backup folder destination not chosen")
 
 
 def main():

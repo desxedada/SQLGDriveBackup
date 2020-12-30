@@ -203,9 +203,9 @@
     <widget class="QWidget" name="horizontalLayoutWidget_2">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>170</x>
        <y>730</y>
-       <width>131</width>
+       <width>231</width>
        <height>41</height>
       </rect>
      </property>
@@ -236,7 +236,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>410</y>
+       <y>200</y>
        <width>391</width>
        <height>303</height>
       </rect>
@@ -257,9 +257,6 @@
       <property name="bottomMargin">
        <number>10</number>
       </property>
-      <item row="2" column="0">
-       <widget class="QListWidget" name="databaseListWidget"/>
-      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
@@ -267,10 +264,13 @@
         </property>
        </widget>
       </item>
+      <item row="2" column="0">
+       <widget class="QListWidget" name="databaseListWidget"/>
+      </item>
       <item row="4" column="0">
        <widget class="QTextEdit" name="logtextEdit"/>
       </item>
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_10">
         <property name="autoFillBackground">
          <bool>true</bool>
@@ -286,7 +286,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>200</y>
+       <y>500</y>
        <width>391</width>
        <height>191</height>
       </rect>

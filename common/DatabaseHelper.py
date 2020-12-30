@@ -1,80 +1,43 @@
 import time
 import pyodbc
 import logging
-from datetime import datetime, timedelta
-from time import sleep
-
-from apscheduler.events import EVENT_JOB_EXECUTED, EVENT_JOB_ERROR
-from apscheduler.schedulers.background import BackgroundScheduler as Scheduler
-
-from common.APS import customSchedule
+from pytz import utc
 
 
-class APS(object):
+from apscheduler.executors.pool import ProcessPoolExecutor
+from apscheduler.jobstores.base import JobLookupError
+from apscheduler.jobstores.sqlalchemy import SQLAlchemyJobStore
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
+class DatabaseHelper():
+
     def __init__(self):
-        self._cron_jobs = {}
-        self._interval_jobs = {}
-        self._scheduler = None
+        pass
 
-    def add_cron_job(self, job, **kwargs):
-        self._cron_jobs[job.__name__] = (job, kwargs)
-        return len(self._cron_jobs)
-
-    def add_interval_jobs(self, job, **kwargs):
-        self._interval_jobs[job.__name__] = (job, kwargs)
-        return len(self._interval_jobs)
-
-    def start_scheduler(self):
-        if len(self._cron_jobs) <= 0:
-            return False
-        self._scheduler = Scheduler()
-        for job, kwargs in self._interval_jobs.values():
-            self._scheduler.add_job(job, 'interval', id=job.__name__, **kwargs)
-        for job, kwargs in self._cron_jobs.values():
-            self._scheduler.add_job(job, 'cron', id=job.__name__, **kwargs)
-        self._scheduler.start()
-        return True
-
-    def stop_scheduler(self):
-        if self._scheduler is not None:
-            self._scheduler.shutdown()
-
-
-class DatabaseHelper(APS):
-    def __init__(self,server,trust_conn):
-        APS.__init__(self)
-        logging.basicConfig()
-        logging.getLogger('apscheduler').setLevel(logging.DEBUG)
-        self.server = server
-        self.trust_conn = trust_conn
-
-
-    def initialize_params(self):
+    def initialize_params(self, server, trust_conn):
         params = (r"DRIVER={ODBC Driver 17 for SQL Server};"
-                  f"SERVER={self.server};"
-                  f"Trusted_Connection={self.trust_conn};"
+                  f"SERVER={server};"
+                  f"Trusted_Connection={trust_conn};"
                   )
         return params
 
-    def test_connection(self):
+    def test_connection(self, params):
 
         for retry in range(3):
             try:
-             params = self.initialize_params()
-             conn = pyodbc.connect(params)
-             cursor = conn.cursor()
-             cursor.execute("SELECT 1")
-             logging.info("Connection Established")
-             conn.close()
-             return "Connection established"
+                conn = pyodbc.connect(params)
+                cursor = conn.cursor()
+                cursor.execute("SELECT 1")
+                logging.info("Connection Established")
+                conn.close()
+                return "Connection established"
             except pyodbc.ProgrammingError as e:
                 return "Connection Failed"
 
-   
-    def displayAllDatabases(self):
+    def displayAllDatabases(self, params):
         databases = []
         try:
-            params = self.initialize_params()
             conn = pyodbc.connect(params)
             cursor = conn.cursor()
 
@@ -86,32 +49,57 @@ class DatabaseHelper(APS):
 
         return databases
 
-    def backup_database(self,name,path):
-        params = self.initialize_params()
+    def backup_database(self, params, name, path):
         conn = pyodbc.connect(params)
         cursor = conn.cursor()
         conn.autocommit = True
-        timestamp = time.strftime("%Y-%m-%d_%H-%M")
+        timestamp = time.strftime("%Y-%m-%d__%H-%M")
+        file_name = f'{name}_{timestamp}.bak'
         cursor.execute(
-        f"BACKUP DATABASE {name} TO DISK = '{path}\\{name}_{timestamp}.bak'")
+            f"BACKUP DATABASE {name} TO DISK = '{path}\\{file_name}'")
         logging.info(f"{name} is being backed up")
 
-        #customS.stop_scheduler()
 
-    def print_something(self):
-        print("sdadsad")
+class APS:
+    def __init__(self):
+        self.sched = BackgroundScheduler()
+        self.sched.start()
+        self.job_id = ''
 
-    def add_schedule(self,job,time):
-        time = datetime.now() + timedelta(minutes=1)
-        self.add_cron_job(
-            job, hour=time.hour, minute=time.minute
-            )
+    def __del__(self):
+        self.shutdown()
+
+    def shutdown(self):
+        self.sched.shutdown()
+
+    def kill_scheduler(self, job_id):
+        try:
+            self.sched.remove_job(job_id)
+        except JobLookupError as err:
+            logging.error("fail to stop Scheduler: {err}".format(err=err))
+            return
+
+    def run_job(self):
+        print("doing something")
+        logging.info("Running Job")
+
+    def add_schedule(self, hour, minute):
+        logging.info("{type} Scheduler Start".format(type="cron"))
+        self.sched.add_job(self.run_job, "cron", day_of_week='mon-fri'
+                           , hour=hour
+                           , minute=minute
+                           , second=00
+                           )
 
 
 if __name__ == '__main__':
-    try:
-        dh = DatabaseHelper(".\\DEVTEST","yes")
-        dh.add_schedule(dh.print_something,5)
-        dh.start_scheduler()
-    except Exception:
-        dh.stop_scheduler()
+    dh = DatabaseHelper()
+    params = dh.initialize_params(".\\DEVTEST", "yes")
+    _schedule = APS()
+    logging.info("Start Job")
+    while True:
+        _schedule.add_schedule(16,46)
+        dh.backup_database(params, "developer", "C:\\Backups")
+
+
+#https://gitlab.corp.sellmate.co.kr/sellmate/message-schedule/-/blob/e21531be3368f0e41d6d9c70786ae8634e8d6d53/main.py
